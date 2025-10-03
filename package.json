@@ -1,0 +1,15 @@
+{
+  "name": "bleak-mori",
+  "version": "0.1.0",
+  "description": "Dark Forest-style single-player strategy game",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^4.3.0"
+  }
+}
