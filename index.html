@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Forest - Strategy Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            overflow: hidden;
+        }
+        #app {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+        #gameCanvas {
+            flex: 1;
+            background: #000;
+            cursor: crosshair;
+        }
+        #ui-panel {
+            width: 300px;
+            background: #111;
+            border-left: 2px solid #0f0;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .panel-section {
+            margin-bottom: 20px;
+            border: 1px solid #0a0;
+            padding: 10px;
+        }
+        .panel-section h3 {
+            color: #0f0;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .resource-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        .button {
+            background: #0a0;
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px 0;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .button:hover {
+            background: #0f0;
+        }
+        .button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+        #log {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 10px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px;
+        }
+        #planet-popup {
+            position: fixed;
+            background: #111;
+            border: 2px solid #0f0;
+            padding: 15px;
+            display: none;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        #planet-popup h4 {
+            margin-bottom: 10px;
+            color: #0ff;
+        }
+        .popup-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui-panel">
+            <div class="panel-section">
+                <h3>RESOURCES</h3>
+                <div class="resource-item">
+                    <span>Energy:</span>
+                    <span id="energy">0</span>
+                </div>
+                <div class="resource-item">
+                    <span>Material:</span>
+                    <span id="material">0</span>
+                </div>
+                <div class="resource-item">
+                    <span>Compute:</span>
+                    <span id="compute">0</span>
+                </div>
+            </div>
+            
+            <div class="panel-section">
+                <h3>STATUS</h3>
+                <div class="resource-item">
+                    <span>Exposure:</span>
+                    <span id="exposure">0</span>
+                </div>
+                <div class="resource-item">
+                    <span>Tick:</span>
+                    <span id="tick">0</span>
+                </div>
+                <div class="resource-item">
+                    <span>Colonies:</span>
+                    <span id="colonies">0</span>
+                </div>
+            </div>
+            
+            <div class="panel-section">
+                <h3>ACTIONS</h3>
+                <button class="button" id="btn-pulse">Pulse Scan (E:10)</button>
+                <button class="button" id="btn-deep">Deep Scan (E:50)</button>
+            </div>
+            
+            <div class="panel-section">
+                <h3>EVENT LOG</h3>
+                <div id="log"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="planet-popup">
+        <h4 id="popup-title">Planet</h4>
+        <div id="popup-content"></div>
+        <button class="button" id="popup-colonize">Colonize</button>
+        <button class="button" id="popup-strike">Strike</button>
+        <button class="button" id="popup-close">Close</button>
+    </div>
+    
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
