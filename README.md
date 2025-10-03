@@ -1,5 +1,7 @@
 # Bleak Mori - Dark Forest Strategy Game
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 A single-player web-based strategy game inspired by the Dark Forest trilogy. Survive in a hostile universe by managing resources, exploring space, and maintaining low exposure to avoid AI detection.
 
 ## 🎮 Game Overview
@@ -111,6 +113,8 @@ src/
 │   └── renderer.ts      # Canvas rendering
 ├── ui/
 │   └── uiManager.ts     # UI panel management
+├── i18n/
+│   └── translations.ts  # Multi-language translations
 └── main.ts              # Game loop and entry point
 ```
 
@@ -149,15 +153,31 @@ Key parameters (editable in `src/constants.ts`):
 
 ### Initial Game State
 ![Initial State](https://github.com/user-attachments/assets/21a31978-ba54-4d72-ba42-aa0b8128c31b)
+*Starting the game with your initial green colony surrounded by unknown gray planets*
 
 ### After Pulse Scan
 ![After Scan](https://github.com/user-attachments/assets/65eb5649-b813-4eb7-b9d2-a9cab89c9ee1)
+*After launching a pulse scan, nearby planets are revealed and the resource panel shows current status*
 
 ### Planet Interaction
 ![Planet Popup](https://github.com/user-attachments/assets/80ec08c5-ba5a-4d6a-9e03-29f388ffe8fc)
+*Clicking on a planet opens a detailed popup with options to colonize or strike*
 
 ### Game Over
 ![Game Over](https://github.com/user-attachments/assets/acf1de9c-4606-4c2e-b8b6-6e4719960ab3)
+*Game ends when all colonies are lost*
+
+### Resource Management
+*Colonizing multiple planets increases resource production, but watch your exposure level*
+
+### Colony Expansion
+*Successfully colonized planets turn green and provide continuous resource income*
+
+### Strategic Strikes
+*Launching strikes against hostile AI requires careful planning as it significantly increases exposure*
+
+### Mid-Game State
+*Managing multiple colonies, balancing resource production with exposure while defending against AI attacks*
 
 ## 📜 License
 
@@ -166,3 +186,35 @@ MIT
 ## 🙏 Acknowledgments
 
 Inspired by "The Three-Body Problem" trilogy by Liu Cixin and the Dark Forest theory.
+
+---
+
+## 🌟 Game Mechanics Deep Dive
+
+### Exposure Mechanics
+Exposure is the core mechanic of the game:
+- Each colony generates base exposure
+- Launching probes increases exposure
+- Launching strikes significantly increases exposure
+- Exposure naturally decays each tick
+- AI decides whether to attack based on your exposure level
+
+### Intelligence & Exploration
+The game uses a 4-tier intelligence system:
+1. **Unknown**: Only shows planet position
+2. **Known**: Shows basic information
+3. **Scanned**: Shows resource production
+4. **Analyzed**: Shows all detailed information
+
+### Resource Balance
+Three resource types each serve different purposes:
+- **Energy**: Main cost for launching probes and strikes
+- **Material**: Construction cost for colonization and strikes
+- **Compute**: Reserved for future tech upgrades
+
+### AI Behavior
+AI opponents have the following characteristics:
+- Detect players based on exposure
+- Have different aggression levels
+- Expand their own territory
+- Attack high-exposure targets

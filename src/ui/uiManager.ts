@@ -1,6 +1,7 @@
 // UI management
 
 import type { GameState, Planet } from '../core/types';
+import { i18n } from '../i18n/translations';
 
 export class UIManager {
     private elements: {
@@ -39,6 +40,51 @@ export class UIManager {
         };
         
         this.elements.popupClose.addEventListener('click', () => this.hidePopup());
+        
+        // Language toggle
+        const langToggle = document.getElementById('lang-toggle');
+        if (langToggle) {
+            langToggle.addEventListener('click', () => {
+                const currentLang = i18n.getLanguage();
+                i18n.setLanguage(currentLang === 'en' ? 'zh' : 'en');
+            });
+        }
+        
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            this.updateUILabels();
+        });
+        
+        // Initial labels
+        this.updateUILabels();
+    }
+    
+    private updateUILabels(): void {
+        // Update section headers
+        const headers = document.querySelectorAll('.panel-section h3');
+        if (headers[0]) headers[0].textContent = i18n.t('resources');
+        if (headers[1]) headers[1].textContent = i18n.t('status');
+        if (headers[2]) headers[2].textContent = i18n.t('actions');
+        if (headers[3]) headers[3].textContent = i18n.t('eventLog');
+        
+        // Update resource labels
+        const resourceLabels = document.querySelectorAll('.resource-item span:first-child');
+        if (resourceLabels[0]) resourceLabels[0].textContent = i18n.t('energy') + ':';
+        if (resourceLabels[1]) resourceLabels[1].textContent = i18n.t('material') + ':';
+        if (resourceLabels[2]) resourceLabels[2].textContent = i18n.t('compute') + ':';
+        if (resourceLabels[3]) resourceLabels[3].textContent = i18n.t('exposure') + ':';
+        if (resourceLabels[4]) resourceLabels[4].textContent = i18n.t('tick') + ':';
+        if (resourceLabels[5]) resourceLabels[5].textContent = i18n.t('colonies') + ':';
+        
+        // Update buttons
+        const pulseBtn = document.getElementById('btn-pulse');
+        const deepBtn = document.getElementById('btn-deep');
+        if (pulseBtn) pulseBtn.textContent = i18n.t('pulseScan');
+        if (deepBtn) deepBtn.textContent = i18n.t('deepScan');
+        
+        this.elements.popupColonize.textContent = i18n.t('colonize');
+        this.elements.popupStrike.textContent = i18n.t('strike');
+        this.elements.popupClose.textContent = i18n.t('close');
     }
     
     update(state: GameState): void {
@@ -70,18 +116,25 @@ export class UIManager {
     showPlanetPopup(planet: Planet, onColonize: () => void, onStrike: () => void): void {
         this.selectedPlanet = planet;
         
-        this.elements.popupTitle.textContent = `Planet ${planet.id}`;
+        this.elements.popupTitle.textContent = `${i18n.t('planet')} ${planet.id}`;
         
-        const visStages = ['Unknown', 'Known', 'Scanned', 'Analyzed'];
+        const visStages = [i18n.t('unknown'), i18n.t('known'), i18n.t('scanned'), i18n.t('analyzed')];
+        const planetTypes: Record<string, string> = {
+            'barren': i18n.t('barren'),
+            'rocky': i18n.t('rocky'),
+            'gas': i18n.t('gas'),
+            'oceanic': i18n.t('oceanic')
+        };
+        
         const info = [
-            `Type: ${planet.type}`,
-            `Visibility: ${visStages[planet.visibilityStage]}`,
-            `Owner: ${planet.owner || 'None'}`,
-            planet.destroyed ? 'DESTROYED' : ''
+            `${i18n.t('type')}: ${planetTypes[planet.type] || planet.type}`,
+            `${i18n.t('visibility')}: ${visStages[planet.visibilityStage]}`,
+            `${i18n.t('owner')}: ${planet.owner || i18n.t('none')}`,
+            planet.destroyed ? i18n.t('destroyed') : ''
         ].filter(s => s).join('<br>');
         
         if (planet.visibilityStage >= 2) {
-            const resources = `<br>Energy: ${planet.baseResources.energy}<br>Material: ${planet.baseResources.material}`;
+            const resources = `<br>${i18n.t('energy')}: ${planet.baseResources.energy}<br>${i18n.t('material')}: ${planet.baseResources.material}`;
             this.elements.popupContent.innerHTML = info + resources;
         } else {
             this.elements.popupContent.innerHTML = info;
