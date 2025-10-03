@@ -1,0 +1,66 @@
+A. 更新后的提示词（加入：必须具备网页图形界面 Canvas/简单UI）
+
+完整版提示词： 本项目：单机网页策略小游戏（Dark Forest 风格核心玩法）。要求：有基础图形界面（HTML + Canvas 或 WebGL），中央星图可视化 + 侧边操作面板 + 基础数值显示。目标：实现主玩法最小可运行版本（MVP），不扩展剧情/音效/多人/复杂事件。
+
+核心循环：
+
+发射探测器（两类：pulse / deep）
+更新行星情报层级（unknown→known→scanned→analyzed）
+决策：殖民 / 打击 / 等待降低暴露 / 简单科技升级
+行为改变：资源(energy/material/compute)产出与消耗 + 暴露值
+AI 依据玩家暴露概率做简单“发现→打击”判断
+玩家维持生存或达成胜利条件（占位：生存时长或殖民数）
+MVP 必须实现系统：
+
+星图生成：≥200 星球（随机分布，包含基础类型、潜在文明标记占位）
+情报层级管理
+探测器：pulse（快/小范围/低暴露），deep（慢/大范围/高暴露）
+暴露值：行为增、随时间衰减；作为 AI 打击概率权重
+资源循环：随 Tick 由殖民星球产生；行为消耗
+殖民：占领星球 → 增产出 + 可能增加基础暴露基线
+打击：发射→飞行计时→命中（毁灭或无效）；命中引起临时暴露峰值
+AI：定期（每 N Tick）评估是否发起打击（依据玩家暴露与随机扰动）；随机扩张少量中立星球
+科技（占位 3~5 项线性加成：探测效率 / 暴露衰减 / 解析速度 / 资源效率）
+Tick 循环（500ms~1s）与渲染分离；简单 UI：资源栏、按钮、日志区
+简易日志/事件面板显示关键动作（探测完成、AI 打击来袭倒计时等）
+可选存档占位接口
+界面约束：
+
+单页面：Canvas 显示星图（支持缩放或先不缩放），侧边/顶部面板显示资源与动作按钮
+不实现复杂动画：扫描用半透明圈/波纹，打击用线段/爆点
+颜色区分：未知星球灰，已知淡色，殖民高亮，AI 拥有用另一色，打击目标闪烁
+交互：点击星球弹出基础操作（探测/殖民/打击）
+数据结构建议： Planet { id,pos{x,y},type,baseResources{energy,material},lifeHint:boolean,civLevel:0-3,visibilityStage:0-3,owner:null|'player'|'AI_x',destroyed?:boolean }
+Probe { id,mode:'pulse'|'deep',state:'enRoute'|'scanning'|'done',startTime,endTime,range,exposureDelta,targetArea:{x,y,r} }
+Strike { id,targetPlanetId,launchTime,impactTime,weaponType,resolved:boolean,hit?:boolean }
+Player { exposure,exposureBase,resources{energy,material,compute},colonies[planetIds],probes[ids],strikes[ids],tech{…} }
+AI { id,homePlanetId,aggression:0-100,detectionBias:0-100,lastStrikeTime,predictedPlayerSectors:[{sectorId,prob}],tech{…},knownColonies:[planetIds] }
+GameState { planets[],player,ais[],probes[],strikes[],tick,time,log[] }
+
+更新顺序（每 Tick）：
+
+更新时间 / Tick 计数
+更新探测器（完成则刷新行星情报层级 & 计算暴露增量）
+更新打击飞行 & 结算命中
+资源产出（殖民行星累加）
+暴露值衰减（exposure = max(exposureBase, exposure - decay + pendingAdd)）
+AI 决策（间隔执行）
+科技进度（若有）
+清理完成对象 / 追加日志 / 触发 UI 刷新
+限制 / 不做：
+
+多人、排行榜、音频、复杂事件链、拦截弹道、视觉特效、剧情文本、复杂外交
+深度平衡：基础线性或简单指数即可
+不输出与上述无关的大段叙事
+代码风格要求：
+
+模块化目录：/core /systems /state /render /ui /constants
+所有魔法数字集中 constants
+TypeScript 接口明确
+标注 TODO 可扩展点
+保持最小可运行（能在浏览器本地用简单 bundler 或原生 ESModule 运行）
+当我说：开始生成代码 → 直接产出可运行骨架（不再复述背景）
+当我说：细化X模块 → 仅扩写该模块
+当我说：压缩 → 简化变量/注释，不删功能语义
+
+若输出偏题（加入背景世界观/多余复杂功能），请主动收敛提醒。
